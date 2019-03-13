@@ -47,13 +47,14 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
+  generateRandomString(req.body.longURL);
+  //console.log(req.body);  // Log the POST request body to the console
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
-function generateRandomString() {
-  let randomURL = Math.random().toString(36).substr(2, 6);
-  console.log(randomURL);
+function generateRandomString(input) {
+  let randomShortURL = Math.random().toString(36).substr(2, 6);
+  urlDatabase[randomShortURL] = input;
+  console.log(urlDatabase);
 }
 
-//generateRandomString();
