@@ -17,7 +17,7 @@
     <h4>My URLs</h4><br />
     <% for (let i in urls){%> 
       <form class="form-inline" method="POST" action="/urls/<%= i %>/delete">
-      <h6><li><b>shortURL: <%= i %>,</b> longURL: <a href="<%= urls[i] %>"><%= urls[i];%></a></li></h6>&nbsp;&nbsp;
+      <h6><li><b>shortURL: <a href="urls/<%= i %>"><%= i %> </a>,</b> longURL: <a href="<%= urls[i] %>"><%= urls[i];%></a></li></h6>&nbsp;&nbsp;
       <button type="submit" class="btn btn-outline-warning">Delete</button> &nbsp;&nbsp;
       <a href="urls/<%= i %>" class="btn btn-outline-warning">Edit</a>
       </form>
