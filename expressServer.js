@@ -11,6 +11,13 @@ let urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+function generateRandomString(input) {
+  const randomShortURL = Math.random().toString(36).substr(2, 6);
+  urlDatabase[randomShortURL] = input;
+  //console.log(urlDatabase);
+  return randomShortURL;
+}
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -41,15 +48,17 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+app.post("/urls", (req, res) => {
+  const shortURL = generateRandomString(req.body.longURL);
+  //console.log(shortURL)
+  res.redirect(`/urls/${shortURL}`);
+  //console.log(req.body);  // Log the POST request body to the console
+  //res.send("Ok");         // Respond with 'Ok' (we will replace this)
+});
+
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
-});
-
-app.post("/urls", (req, res) => {
-  generateRandomString(req.body.longURL);
-  //console.log(req.body);  // Log the POST request body to the console
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -61,9 +70,10 @@ app.get("/u/:shortURL", (req, res) => {
   }
 });
 
-function generateRandomString(input) {
-  const randomShortURL = Math.random().toString(36).substr(2, 6);
-  urlDatabase[randomShortURL] = input;
-  console.log(urlDatabase);
-}
+app.post('/urls/:shortURL/delete', (req, res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect('/urls')
+});
+
+
 

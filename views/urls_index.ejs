@@ -14,9 +14,13 @@
 <body style="font-size:20px; padding:50px;">
     <!-- Add EJS code here -->
     <a href="#">Create your Tiny URL!</a>
-    <h4>Saved URLs</h4>
+    <h4>My URLs</h4>
     <% for (let i in urls){%> 
-        <h6>shortURL: <%= i;%>, longURL: <%= urls[i];%></h6>
+      <h6><li><b>shortURL: <%= i;%>,</b> longURL: <%= urls[i];%>
+        <form method="POST" action="/urls/<%= i %>/delete">
+          <button type="submit" class="btn btn-outline-warning">Delete</button>
+        </form>
+      </li></h6>
     <% } %>
 
 </body>
