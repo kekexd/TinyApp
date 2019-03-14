@@ -69,8 +69,12 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = { user: users[req.cookies["user_id"]] };
-  res.render("urls_new", templateVars);
+  if(!req.cookies["user_id"]){
+    res.redirect('/login');
+  } else {
+    const templateVars = { user: users[req.cookies["user_id"]] };
+    res.render("urls_new", templateVars);
+  }
 });
 
 app.post("/urls", (req, res) => {
