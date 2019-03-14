@@ -1,15 +1,15 @@
-var express = require("express");
-var app = express();
-var PORT = 8080; // default port 8080
+const express = require("express");
+const app = express();
+const PORT = 8080; // default port 8080
 
-var cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
 app.set("view engine", "ejs"); 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-let urlDatabase = {
+const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
@@ -31,6 +31,14 @@ function generateRandomString() {
   const randomString = Math.random().toString(36).substr(2, 6);
   //console.log(urlDatabase);
   return randomString;
+}
+
+function checkEmail(email){
+  for(let u in users){
+    if(users[u]['email'] === email){
+      return true;
+    }
+  }
 }
 
 app.get("/", (req, res) => {
@@ -120,13 +128,19 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  const userId = generateRandomString();
-  users[userId] = {
-    id: userId, 
-    email: req.body.email, 
-    password: req.body.password
-  }
-  console.log(users);
-  res.cookie('user_id', userId);
-  res.redirect('/urls');
+  if(!req.body.email || !req.body.password){
+    res.send(res.statusCode = 400, 'Empty input!');
+  } else if (checkEmail(req.body.email) === true){
+    res.send(res.statusCode = 400, 'Email already exists!')
+  } else {
+      const userId = generateRandomString();
+      users[userId] = {
+        id: userId, 
+        email: req.body.email, 
+        password: req.body.password
+      }
+      //console.log(users);
+      res.cookie('user_id', userId);
+      res.redirect('/urls');
+    }
 })
