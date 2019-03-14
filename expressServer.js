@@ -111,6 +111,10 @@ app.post('/urls/:shortURL', (req, res) => {
   // res.render("urls_show", templateVars);
 });
 
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
 app.post('/login', (req, res) => {
   res.cookie('userId', req.body.username);
   //console.log('Cookies: ', res.cookie('username', req.body.username));
@@ -123,8 +127,8 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-  const templateVars = { user: users[req.cookies["user_id"]] };
-  res.render("register", templateVars);
+  //const templateVars = { user: users[req.cookies["user_id"]] };
+  res.render("register");
 });
 
 app.post('/register', (req, res) => {

@@ -1,14 +1,13 @@
 <h1>TinyApp</h1> 
 <% if (!user){ %>
     <form method="POST" action='/login' class='form-inline'>
-        <label for="username">Your Username:</label>
-        <input class="form-control" type="text" name="username" placeholder='Your Username' style="width: 300px; margin: 1em">
-        <button type="submit" class="btn btn-outline-info">Login</button>&nbsp;&nbsp;
-        <a href="/register" class="btn btn-outline-info">Register</a>
+        <!-- <label for="username">Your Username:</label> -->
+        <a href="/login" class="btn btn-outline-info btn-sm">Login</a>&nbsp;&nbsp;
+        <a href="/register" class="btn btn-outline-info btn-sm">Register</a>
     </form>
 <% } else {%>
     <form method="POST" action='/logout' class='form-inline'>
         <label for="username">&nbsp;&nbsp;&nbsp;&nbsp;Hello&nbsp;<b><%= user['email'] %>!</b></label>&nbsp;&nbsp;
-        <button type="submit" class="btn btn-outline-info">Logout</button>
+        <button type="submit" class="btn btn-outline-info btn-sm">Logout</button>
     </form>
 <% } %>
