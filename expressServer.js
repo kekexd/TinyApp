@@ -131,8 +131,16 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect('/urls');
+  if(!req.cookies["user_id"]){
+    res.redirect('/login');
+  } else {
+    if(checkUrlsBelongtoUser(req.params.shortURL, req.cookies["user_id"])){
+      delete urlDatabase[req.params.shortURL];
+      res.redirect('/urls');
+    }else {
+      res.send ('This URL belongs to somebody else!')
+    }
+  }
 });
 
 app.post('/urls/:shortURL', (req, res) => {
