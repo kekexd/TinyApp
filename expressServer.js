@@ -9,23 +9,26 @@ app.set("view engine", "ejs");
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
+const bcrypt = require('bcrypt');
+
 const urlDatabase = {
-  "b2xVn2": { longURL: "https://www.tsn.ca", userID: "xyz" },
-  "9sm5xK": { longURL: "http://www.google.com", userID: "abc" }
+  "b2xVn2": { longURL: "https://www.tsn.ca", userID: "gmjjl1" },
+  "9sm5xK": { longURL: "http://www.google.com", userID: "znmg1s" }
 };
 
 const users = { 
-  "abc": {
-    id: "abc", 
-    email: "user@example.com", 
-    password: "purple"
+  "gmjjl1": {
+    id: "agmjjl1c", 
+    email: "random@random.com", 
+    password: '$2b$10$raJIkbeqoaSSIswnzEt5/u/HTOei9wtvQ4S7FyGohI6Ve.yhKrKha'
   },
- "xyz": {
-    id: "xyz", 
-    email: "user2@example.com", 
-    password: "funk"
+ "znmg1s": {
+    id: "znmg1s", 
+    email: "user@example.com", 
+    password: '$2b$10$JpR.Px/xMdp7Ho99NSY5zu6PWsOIWB0trR/6omNHOFOkv4mNn37X6'
   }
 }
+
 
 function generateRandomString() {
   const randomString = Math.random().toString(36).substr(2, 6);
@@ -170,7 +173,7 @@ app.post('/login', (req, res) => {
     for (let u in users){
       if(users[u]['email'] === req.body.email){
         storedPswd = users[u]['password'];
-        if(req.body.password === storedPswd){
+        if (bcrypt.compareSync(req.body.password, storedPswd)){
           res.cookie('user_id', u);
           res.redirect('/urls');
         } else {
@@ -204,10 +207,11 @@ app.post('/register', (req, res) => {
       users[userId] = {
         id: userId, 
         email: req.body.email, 
-        password: req.body.password
+        password: bcrypt.hashSync(req.body.password, 10)
       }
-      //console.log(users);
+      console.log(users);
       res.cookie('user_id', userId);
       res.redirect('/urls');
     }
 })
+
