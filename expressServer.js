@@ -114,14 +114,16 @@ app.post('/urls/:shortURL', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  res.render('login');
+  const templateVars = { user: users[req.cookies["user_id"]] };
+  res.render('login', templateVars);
 });
 
 app.post('/login', (req, res) => {
   //res.cookie('userId', req.body.username);
   //console.log('Cookies: ', res.cookie('username', req.body.username));
   if (checkEmail(req.body.email) === false){
-    res.send(res.statusCode = 403, 'Email does not exist!')
+    res.statusCode = 403; 
+    res.send('Email does not exist!')
   } else {
     for (let u in users){
       if(users[u]['email'] === req.body.email){
@@ -130,7 +132,8 @@ app.post('/login', (req, res) => {
           res.cookie('user_id', u);
           res.redirect('/urls');
         } else {
-          res.send(res.statusCode = 403, 'Email and password do not match!')
+          res.statusCode = 403;
+          res.send('Email and password do not match!')
         }
       }
     }
@@ -143,15 +146,17 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-  //const templateVars = { user: users[req.cookies["user_id"]] };
-  res.render("register");
+  const templateVars = { user: users[req.cookies["user_id"]] };
+  res.render("register", templateVars);
 });
 
 app.post('/register', (req, res) => {
   if(!req.body.email || !req.body.password){
-    res.send(res.statusCode = 400, 'Empty input!');
+    res.statusCode = 400;
+    res.send('Empty input!');
   } else if (checkEmail(req.body.email) === true){
-    res.send(res.statusCode = 400, 'Email already exists!')
+    res.statusCode = 400;
+    res.send('Email already exists!')
   } else {
       const userId = generateRandomString();
       users[userId] = {
