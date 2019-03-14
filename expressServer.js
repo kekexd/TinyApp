@@ -57,17 +57,17 @@ app.get("/urls.json", (req, res) => {
 //   res.send("<html><body>Hello <b>World</b></body></html>\n");
 // });
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, userId: req.cookies["user_id"], users: users };
+  const templateVars = { urls: urlDatabase, user: users[req.cookies["user_id"]] };
   res.render("urls_index", templateVars);
 });
 
 app.get("/hello", (req, res) => {
-  const templateVars = { greeting: 'Hello World!', userId: req.cookies["user_id"] };
+  const templateVars = { greeting: 'Hello World!', user: users[req.cookies["user_id"]] };
   res.render("hello_world", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = { userId: req.cookies["user_id"], users: users };
+  const templateVars = { user: users[req.cookies["user_id"]] };
   res.render("urls_new", templateVars);
 });
 
@@ -81,7 +81,7 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], userId: req.cookies["user_id"], users: users };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies["user_id"]] };
   res.render("urls_show", templateVars);
 });
 
@@ -123,7 +123,7 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-  const templateVars = { userId: req.cookies["user_id"] };
+  const templateVars = { user: users[req.cookies["user_id"]] };
   res.render("register", templateVars);
 });
 
