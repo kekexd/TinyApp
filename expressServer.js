@@ -10,20 +10,20 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": { longURL: "https://www.tsn.ca", userID: "xyz" },
+  "9sm5xK": { longURL: "http://www.google.com", userID: "abc" }
 };
 
 const users = { 
-  "userRandomID": {
-    id: "userRandomID", 
+  "abc": {
+    id: "abc", 
     email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
+    password: "purple"
   },
- "user2RandomID": {
-    id: "user2RandomID", 
+ "xyz": {
+    id: "xyz", 
     email: "user2@example.com", 
-    password: "dishwasher-funk"
+    password: "funk"
   }
 }
 
@@ -40,6 +40,18 @@ function checkEmail(email){
     } //else return false;
   }
   return false;
+}
+
+function urlsForUser(id){
+  const urls = {};
+  for (let i in urlDatabase){
+    if (urlDatabase[i]['userID'] === id){
+      const shortURL = i;
+      const longURL = urlDatabase[i]['longURL'];
+      urls[shortURL] = longURL;
+    }
+  }
+  return urls;
 }
 
 
@@ -59,8 +71,13 @@ app.get("/urls.json", (req, res) => {
 //   res.send("<html><body>Hello <b>World</b></body></html>\n");
 // });
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, user: users[req.cookies["user_id"]] };
-  res.render("urls_index", templateVars);
+  if(!req.cookies["user_id"]){
+    res.redirect('/login');
+  } else {
+    const usersURL = urlsForUser(req.cookies["user_id"])
+    const templateVars = { urls: usersURL, user: users[req.cookies["user_id"]] };
+    res.render("urls_index", templateVars);
+  }
 });
 
 app.get("/hello", (req, res) => {
