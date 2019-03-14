@@ -34,12 +34,14 @@ function generateRandomString() {
 }
 
 function checkEmail(email){
-  for(let u in users){
+  for(let u in users) {
     if(users[u]['email'] === email){
       return true;
-    }
+    } //else return false;
   }
+  return false;
 }
+
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -116,9 +118,23 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  res.cookie('userId', req.body.username);
+  //res.cookie('userId', req.body.username);
   //console.log('Cookies: ', res.cookie('username', req.body.username));
-  res.redirect('/urls');
+  if (checkEmail(req.body.email) === false){
+    res.send(res.statusCode = 403, 'Email does not exist!')
+  } else {
+    for (let u in users){
+      if(users[u]['email'] === req.body.email){
+        storedPswd = users[u]['password'];
+        if(req.body.password === storedPswd){
+          res.cookie('user_id', u);
+          res.redirect('/urls');
+        } else {
+          res.send(res.statusCode = 403, 'Email and password do not match!')
+        }
+      }
+    }
+  }
 });
 
 app.post('/logout', (req, res) => {
