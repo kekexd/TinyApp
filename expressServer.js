@@ -102,7 +102,7 @@ app.get("/urls/new", (req, res) => {
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
   //console.log(shortURL)
-  urlDatabase[shortURL] = req.body.longURL;
+  urlDatabase[shortURL] = {longURL:(req.body.longURL), userID: req.cookies["user_id"]};
   res.redirect(`/urls/${shortURL}`);
   //console.log(req.body);  // Log the POST request body to the console
   //res.send("Ok");         // Respond with 'Ok' (we will replace this)
@@ -113,7 +113,7 @@ app.get("/urls/:shortURL", (req, res) => {
     res.redirect('/login');
   } else {
     if(checkUrlsBelongtoUser(req.params.shortURL, req.cookies["user_id"])){
-      const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies["user_id"]] };
+      const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]['longURL'], user: users[req.cookies["user_id"]] };
       res.render("urls_show", templateVars);
     } else {
       res.send ('This URL belongs to somebody else!')
