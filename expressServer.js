@@ -14,11 +14,23 @@ let urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-function generateRandomString(input) {
-  const randomShortURL = Math.random().toString(36).substr(2, 6);
-  urlDatabase[randomShortURL] = input;
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
+
+function generateRandomString() {
+  const randomNumber = Math.random().toString(36).substr(2, 6);
   //console.log(urlDatabase);
-  return randomShortURL;
+  return randomNumber;
 }
 
 app.get("/", (req, res) => {
@@ -53,8 +65,9 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  const shortURL = generateRandomString(req.body.longURL);
+  const shortURL = generateRandomString();
   //console.log(shortURL)
+  urlDatabase[shortURL] = req.body.longURL;
   res.redirect(`/urls/${shortURL}`);
   //console.log(req.body);  // Log the POST request body to the console
   //res.send("Ok");         // Respond with 'Ok' (we will replace this)
@@ -99,5 +112,21 @@ app.post('/login', (req, res) => {
 
 app.post('/logout', (req, res) => {
   res.clearCookie('username');
+  res.redirect('/urls');
+});
+
+app.get('/register', (req, res) => {
+  const templateVars = { username: req.cookies["username"] };
+  res.render("register", templateVars);
+});
+
+app.post('/register', (req, res) => {
+  const userId = generateRandomString();
+  users[userId] = {
+    id: userId, 
+    email: req.body.email, 
+    password: req.body.password
+  }
+  console.log(users);
   res.redirect('/urls');
 })
