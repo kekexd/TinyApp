@@ -54,6 +54,11 @@ function urlsForUser(id){
   return urls;
 }
 
+function checkUrlsBelongtoUser(url, user){
+  if(urlDatabase[url]['userID'] === user){
+    return true;
+  }
+}
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -76,7 +81,7 @@ app.get("/urls", (req, res) => {
   } else {
     const usersURL = urlsForUser(req.cookies["user_id"])
     const templateVars = { urls: usersURL, user: users[req.cookies["user_id"]] };
-    res.render("urls_index", templateVars);
+    res.render(`urls_index`, templateVars);
   }
 });
 
@@ -104,8 +109,16 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies["user_id"]] };
-  res.render("urls_show", templateVars);
+  if(!req.cookies["user_id"]){
+    res.redirect('/login');
+  } else {
+    if(checkUrlsBelongtoUser(req.params.shortURL, req.cookies["user_id"])){
+      const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies["user_id"]] };
+      res.render("urls_show", templateVars);
+    } else {
+      res.send ('This URL belongs to somebody else!')
+    }
+  }
 });
 
 app.get("/u/:shortURL", (req, res) => {
