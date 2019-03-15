@@ -12,18 +12,21 @@
   <% include partials/_header.ejs %>
 </head>
 <body style="font-size:20px; padding:50px;">
-    <!-- Add EJS code here -->
-    <!-- <a href="#">Create your Tiny URL!</a> -->
-    <h4>My URLs</h4><br />
-    <% for (let i in urls){%> 
-      <form class="form-inline" method="POST" action="/urls/<%= i %>/delete">
-      <h6><li><b>shortURL: <a href="urls/<%= i %>"><%= i %> </a>,</b> longURL: <a href="<%= urls[i] %>"><%= urls[i]%></a></li></h6>&nbsp;&nbsp;
-      <button type="submit" class="btn btn-outline-warning">Delete 🗑</button> &nbsp;&nbsp;
-      <a href="urls/<%= i %>" class="btn btn-outline-warning">Edit</a>
-      </form>
-    <% } %>
 
-    <a href="urls/new" class="btn btn-outline-success">Add a new URL</a>
+    <h4>My URLs</h4>
+    <table class="table">
+      <% for (let i in urls){%> 
+        <tr>
+          <td>
+              <h5><b>shortURL: <a href="urls/<%= i %>"><%= i %> </a>,</b> longURL: <a href="<%= urls[i]['longURL'] %>"><%= urls[i]['longURL']%></a></h5><h6>Date created: <%= urls[i]['date']%></h6>&nbsp;&nbsp;
+          </td>
+          <td>
+              <form method="POST" action="urls/<%= i %>/delete"><button type="submit" class="btn btn-outline-warning">Delete 🗑</button> &nbsp;&nbsp; <a href="urls/<%= i %>" class="btn btn-outline-warning">Edit</a></form>
+          </td>
+        </tr>>
+      <% } %>  
+    </table>
+  <a href="urls/new" class="btn btn-outline-success">Add a new URL</a>
 
 </body>
 </html>

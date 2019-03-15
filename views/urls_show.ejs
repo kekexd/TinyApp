@@ -14,13 +14,14 @@
 <body style="font-size:20px; padding:50px;">
     <!-- Add EJS code here -->
     <!-- <a href="#">Create your Tiny URL!</a>  -->
-    <h4>shortURL: <%= shortURL %>, longURL: <%=longURL %> </h4>
+    <b>shortURL:</b> <%= shortURL %>, <b>longURL:</b> <a href='<%=longURL %>'><%=longURL %></a> <br/>
+    <h6><b>Date Created:</b> <%= date%></h6>
     <form class="form-inline" method="POST" action = '<%= shortURL %>'>
       <label for="newLongURL">Enter a new URL for <%= shortURL %>:</label>
       <input class="form-control" type="text" name="newLongURL" placeholder="http://" style="width: 300px; margin: 1em">
       <button type="submit" class="btn btn-outline-warning">Update</button>
       <!-- <input type="button" value="Go back!" onclick="history.back()"> -->
     </form>
-    <a href="/urls" class="btn btn-outline-success">Back to my URLs</a>
+    <br/><a href="/urls" class="btn btn-outline-success">Back to my URLs</a>
 </body>
 </html>
