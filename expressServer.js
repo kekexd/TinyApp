@@ -7,8 +7,8 @@ app.use(cookieSession({
   keys: ['49f68a5c8493ec2c0bf489821c21fc3b']
 }))
 
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
+// const cookieParser = require('cookie-parser');
+// app.use(cookieParser());
 
 app.set("view engine", "ejs"); 
 const bodyParser = require("body-parser");
@@ -41,6 +41,7 @@ function generateRandomString() {
   return randomString;
 }
 
+//check if an Email exists in database
 function checkEmail(email){
   for(let u in users) {
     if(users[u]['email'] === email){
@@ -50,6 +51,7 @@ function checkEmail(email){
   return false;
 }
 
+//given an user, output this user's shortURLs, longURLs, and date of creation
 function urlsForUser(id){
   const urls = {};
   for (let i in urlDatabase){
@@ -63,12 +65,14 @@ function urlsForUser(id){
   return urls;
 }
 
+//check if a url belongs to an user
 function checkUrlsBelongtoUser(url, user){
   if(urlDatabase[url]['userID'] === user){
     return true;
   }
 }
 
+//check if an URL exists in database
 function checkURL(url){
   if(urlDatabase[url]){
     return true;
@@ -91,7 +95,7 @@ app.get("/urls.json", (req, res) => {
 //   res.send("<html><body>Hello <b>World</b></body></html>\n");
 // });
 app.get("/urls", (req, res) => {
-  if(!req.session.user_id){
+  if(!req.session.user_id){ // check if the user is logged in
     res.redirect('/login');
   } else {
     const usersURL = urlsForUser(req.session.user_id);
@@ -118,9 +122,9 @@ app.get("/urls/new", (req, res) => {
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
   var localTime = new Date().toLocaleString("en-US", { timeZone: 'America/Vancouver' });
-  localTime = new Date(localTime);
+  localTime = new Date(localTime); 
   urlDatabase[shortURL] = {longURL:(req.body.longURL), userID: req.session.user_id, date: localTime};
-  //console.log(urlDatabase)
+  //add the shortURL, longURL and the date of creation into database
   res.redirect(`/urls/${shortURL}`);
 });
 
@@ -166,7 +170,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 app.post('/urls/:shortURL', (req, res) => {
   const newLongURL = req.body.newLongURL;
-  urlDatabase[req.params.shortURL]['longURL'] = newLongURL;
+  urlDatabase[req.params.shortURL]['longURL'] = newLongURL; //update the database with the newURL that user entered
   res.redirect('/urls')
 });
 
@@ -184,8 +188,8 @@ app.post('/login', (req, res) => {
       if(users[u]['email'] === req.body.email){
         storedPswd = users[u]['password'];
         if (bcrypt.compareSync(req.body.password, storedPswd)){
-          req.session.user_id = u;
-          res.redirect('/urls');
+          req.session.user_id = u; 
+          res.redirect('/urls'); // only if user gives the matching email and password, his urls will be displayed
         } else {
           res.statusCode = 403;
           res.send('Email and password do not match!')
@@ -196,7 +200,7 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-  req.session.user_id = null;
+  req.session.user_id = null; // clear cookie
   res.redirect('/urls');
 });
 
@@ -218,7 +222,7 @@ app.post('/register', (req, res) => {
         users[userId] = {
           id: userId, 
           email: req.body.email, 
-          password: bcrypt.hashSync(req.body.password, 10)
+          password: bcrypt.hashSync(req.body.password, 10) //store the id, email and the encryped password in database
         }
         console.log(users);
         req.session.user_id = userID; 
