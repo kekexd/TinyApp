@@ -15,14 +15,15 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
 const bcrypt = require('bcrypt');
+//const html = template.render({ clickHandler:"func1();" });
 
-var urlDatabase = {
+let urlDatabase = {
   "b2xVn2": { longURL: "https://www.tsn.ca", userID: "gmjjl1", date: 'Fri Mar 15 2019 15:31:07 GMT+0000 (UTC)' },
   "9sm5xK": { longURL: "http://www.google.com", userID: "znmg1s", date: 'Fri Mar 15 2019 09:30:05 GMT+0000 (UTC)' },
   "chjib3": { longURL: "https://stackoverflow.com", userID: "gmjjl1", date: 'Fri Mar 15 2019 15:51:22 GMT+0000 (UTC)'}
 };
 
-var users = { 
+let users = { 
   "gmjjl1": {
     id: "agmjjl1c", 
     email: "random@random.com", 
@@ -59,7 +60,8 @@ function urlsForUser(id){
       const shortURL = i;
       const longURL = urlDatabase[i]['longURL'];
       const date = urlDatabase[i]['date'];
-      urls[shortURL] = {longURL: longURL, date: date};
+      const counter = urlDatabase[i]['counter']
+      urls[shortURL] = {longURL: longURL, date: date, counter: counter};
     }
   }
   return urls;
@@ -137,10 +139,10 @@ app.get("/urls/:shortURL", (req, res) => {
         const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]['longURL'], user: users[req.session.user_id], date: urlDatabase[req.params.shortURL]['date'] };
         res.render("urls_show", templateVars);
       } else {
-        res.send ('This URL belongs to somebody else!')
+        res.redirect('/error/notyoururl');
       }
     } else {
-      res.send ('This short URL does not exist!')
+      res.redirect('/error/nosuchurl');
     }
   }
 });
@@ -150,20 +152,20 @@ app.get("/u/:shortURL", (req, res) => {
     const longURL = urlDatabase[req.params.shortURL]['longURL'];
     res.redirect(longURL);
   } else {
-    res.send ('This short URL does not exist!')
+    res.redirect('/error/nosuchurl');
   }
   
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
   if(!req.session.user_id){
-    res.send('Please log in!');
+    res.redirect('/error/notlogin');
   } else {
     if(checkUrlsBelongtoUser(req.params.shortURL, req.session.user_id)){
       delete urlDatabase[req.params.shortURL];
       res.redirect('/urls');
     }else {
-      res.send ('This URL belongs to somebody else!')
+      res.redirect('/error/notyoururl');
     }
   }
 });
@@ -182,7 +184,7 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
   if (checkEmail(req.body.email) === false){
     res.statusCode = 403; 
-    res.send('Email does not exist!')
+    res.redirect('/error/emailnotexist');
   } else {
     for (let u in users){
       if(users[u]['email'] === req.body.email){
@@ -192,7 +194,7 @@ app.post('/login', (req, res) => {
           res.redirect('/urls'); // only if user gives the matching email and password, his urls will be displayed
         } else {
           res.statusCode = 403;
-          res.send('Email and password do not match!')
+          res.redirect('/error/wrongpswd');
         }
       }
     }
@@ -209,14 +211,19 @@ app.get('/register', (req, res) => {
   res.render("register", templateVars);
 });
 
+app.get('/error/:reason', (req, res) => {
+  const templateVars = { user: users[req.session.user_id], reason: req.params.reason };
+  res.render("error", templateVars);
+})
+
 app.post('/register', (req, res) => {
   if(!req.session.user_id){
     if(!req.body.email || !req.body.password){
       res.statusCode = 400;
-      res.send('Empty input!');
+      res.redirect('/error/noinput');
     } else if (checkEmail(req.body.email) === true){
       res.statusCode = 400;
-      res.send('Email already exists!')
+      res.redirect('/error/emailexists');
     } else {
         const userId = generateRandomString();
         users[userId] = {
