@@ -18,7 +18,7 @@ const bcrypt = require('bcrypt');
 
 var urlDatabase = {
   "b2xVn2": { longURL: "https://www.tsn.ca", userID: "gmjjl1", date: 'Fri Mar 15 2019 15:31:07 GMT+0000 (UTC)' },
-  "9sm5xK": { longURL: "http://www.google.com", userID: "znmg1s", date: 'Tue Mar 12 2019 09:30:05 GMT+0000 (UTC)' },
+  "9sm5xK": { longURL: "http://www.google.com", userID: "znmg1s", date: 'Fri Mar 15 2019 09:30:05 GMT+0000 (UTC)' },
   "chjib3": { longURL: "https://stackoverflow.com", userID: "gmjjl1", date: 'Fri Mar 15 2019 15:51:22 GMT+0000 (UTC)'}
 };
 
@@ -99,7 +99,7 @@ app.get("/urls", (req, res) => {
     res.redirect('/login');
   } else {
     const usersURL = urlsForUser(req.session.user_id);
-    console.log(usersURL)
+    //console.log(usersURL)
     const templateVars = { urls: usersURL, user: users[req.session.user_id] };
     res.render(`urls_index`, templateVars);
   }
