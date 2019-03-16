@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <title>TinyApp</title>
+  <% include partials/_header.ejs %>
+</head>
+<body style="font-size:20px; padding:50px;">
+
+    <h4>--Error--</h4>
+    <% if (reason === 'noinput') { %>     
+        Please enter your Email and password!     
+    <% } %>
+    <% if (reason === 'emailexists') { %>     
+      This Email is already registered!     
+    <% } %>
+    <% if (reason === 'wrongpswd') { %>     
+      The Email and password do not match!     
+    <% } %>
+    <% if (reason === 'emailnotexist') { %>     
+      This Email is not registered!     
+    <% } %>
+    <% if (reason === 'notyoururl') { %>     
+      This URL does not belong to you!     
+    <% } %>
+    <% if (reason === 'notlogin') { %>     
+      Please log in first!     
+    <% } %>
+    <% if (reason === 'nosuchurl') { %>     
+      This short URL does not exist!     
+    <% } %>
+    
+    <br/><br/><a href="/urls" class="btn btn-outline-success">Back</a>
+    
+
+</body>
+</html>
